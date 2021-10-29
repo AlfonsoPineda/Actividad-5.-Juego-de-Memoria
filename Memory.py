@@ -7,6 +7,8 @@ tiles = list(range(32)) * 2
 state = {'mark': None}
 hide = [True] * 64
 taps=0 
+turned_cards = 0
+
 
 def square(x, y):
     "Draw white square with black outline at (x, y)."
@@ -41,6 +43,8 @@ def tap(x, y):
         hide[spot] = False
         hide[mark] = False
         state['mark'] = None
+        global turned_cards
+        turned_cards += 1
 
 def draw():
     "Draw image and tiles."
@@ -59,14 +63,19 @@ def draw():
     if mark is not None and hide[mark]:
         x, y = xy(mark)
         up()
-        goto(x + 6, y + 2) 
-        color('black')
-        write(tiles[mark], font=('Arial', 30, 'normal'))
+        goto(x + 26, y + 4) 
+        color(tiles[mark]*7, 255-tiles[mark]*3, 200-tiles[mark]*5) 
+        write(tiles[mark], align="center", font=('Arial', 30, 'normal')) 
+
 
     goto(0,210) 
     write (taps,font=("Arial",20)) 
-
     update()
+    if turned_cards==32: 
+        up()
+        goto(0, 0)
+        color('green')
+        write("GANASTE",  align="center", font=("Arial", 20, "bold")) 
     ontimer(draw, 100)
 
 shuffle(tiles)
